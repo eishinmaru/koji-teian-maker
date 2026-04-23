@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type WorkItem = {
@@ -12,6 +13,7 @@ type WorkItem = {
 };
 
 export default function CreatePage() {
+  const router = useRouter();
   const [projectName, setProjectName] = useState("");
   const [projectDate, setProjectDate] = useState("");
   const [projectLocation, setProjectLocation] = useState("");
@@ -52,6 +54,21 @@ export default function CreatePage() {
     reader.readAsDataURL(file);
   };
 
+  const handlePreview = () => {
+    if (!projectName || !customerName) {
+      alert("工事名とお客様名は必ず入力してください");
+      return;
+    }
+    const data = {
+      projectName, projectDate, projectLocation,
+      customerName, customerAddress, customerPhone,
+      companyName, companyPerson, companyContact,
+      items, photo,
+    };
+    localStorage.setItem("proposalData", JSON.stringify(data));
+    router.push("/preview");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -62,8 +79,9 @@ export default function CreatePage() {
             <h1 className="text-xl font-bold text-gray-900">新しい提案書を作成</h1>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">プレビュー</button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">PDF出力</button>
+            <button onClick={handlePreview} className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+              プレビュー →
+            </button>
           </div>
         </div>
       </header>
@@ -225,8 +243,9 @@ export default function CreatePage() {
           </section>
 
           <div className="flex justify-end gap-3 py-6">
-            <button className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">プレビュー</button>
-            <button className="px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm">PDF出力</button>
+            <button onClick={handlePreview} className="px-6 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm">
+              プレビュー →
+            </button>
           </div>
         </div>
       </main>
